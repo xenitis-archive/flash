@@ -149,6 +149,48 @@
         transparent 3px);
       mix-blend-mode: overlay;
     }
+    .hotspot {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+
+  z-index: 50;
+}
+
+.hotspot::after {
+  content: attr(data-title);
+
+  position: absolute;
+  left: 50%;
+  top: -28px;
+
+  transform: translateX(-50%);
+
+  color: rgba(255,255,255,0.8);
+
+  font-size: 11px;
+  letter-spacing: 2px;
+
+  opacity: 0;
+
+  transition: opacity 0.3s ease;
+
+  white-space: nowrap;
+}
+
+.hotspot:hover::after {
+  opacity: 1;
+}
+
+.hotspot:hover {
+  box-shadow: 0 0 40px rgba(255,255,255,0.08);
+}
   </style>
 </head>
 
@@ -233,46 +275,3 @@
 
 </body>
 </html>
-
-.hotspot {
-  position: absolute;
-  width: 120px;
-  height: 120px;
-
-  border-radius: 50%;
-
-  cursor: pointer;
-
-  transition: all 0.3s ease;
-
-  z-index: 50;
-}
-
-.hotspot::after {
-  content: attr(data-title);
-
-  position: absolute;
-  left: 50%;
-  top: -28px;
-
-  transform: translateX(-50%);
-
-  color: rgba(255,255,255,0.8);
-
-  font-size: 11px;
-  letter-spacing: 2px;
-
-  opacity: 0;
-
-  transition: opacity 0.3s ease;
-
-  white-space: nowrap;
-}
-
-.hotspot:hover::after {
-  opacity: 1;
-}
-
-.hotspot:hover {
-  box-shadow: 0 0 40px rgba(255,255,255,0.08);
-}
