@@ -17,6 +17,21 @@
       background: #050505;
       font-family: Arial, Helvetica, sans-serif;
     }
+    
+    .flashLabel {
+  position: fixed;
+  z-index: 90;
+  color: rgba(255,255,255,0.78);
+  background: rgba(0,0,0,0.45);
+  border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(6px);
+  padding: 8px 10px;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
 
     #viewer {
       width: 100vw;
@@ -184,6 +199,43 @@
         drag / zoom / explore
       </div>
       <button onclick="enterArchive()">ENTER ARCHIVE</button>
+      <script>
+  const label = document.getElementById("flashLabel");
+
+  const labels = [
+    {
+      title: "RITUAL_01",
+      status: "available",
+      x: 0.45,
+      y: 0.55,
+      radius: 0.05
+    }
+  ];
+
+  viewer.addHandler("canvas-move", function(event) {
+    const viewportPoint = viewer.viewport.pointFromPixel(event.position);
+    let found = null;
+
+    labels.forEach(item => {
+      const dx = viewportPoint.x - item.x;
+      const dy = viewportPoint.y - item.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < item.radius) {
+        found = item;
+      }
+    });
+
+    if (found) {
+      label.innerHTML = `${found.title}<br>${found.status}`;
+      label.style.left = event.position.x + 18 + "px";
+      label.style.top = event.position.y + 18 + "px";
+      label.style.opacity = 1;
+    } else {
+      label.style.opacity = 0;
+    }
+  });
+</script>
     </div>
   </div>
 
@@ -196,6 +248,7 @@
   </a>
 
   <div class="noise"></div>
+  <div id="flashLabel" class="flashLabel"></div>
   <div class="lens"></div>
 
   <script>
