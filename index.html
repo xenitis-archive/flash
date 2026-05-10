@@ -322,8 +322,8 @@
       };
     }
 
-    viewer.addHandler("canvas-move", function(event) {
-      const normalizedPoint = getNormalizedPoint(event.position);
+    function handlePointerMove(screenPosition) {
+      const normalizedPoint = getNormalizedPoint(screenPosition);
       if (!normalizedPoint) {
         hideLabel();
         return;
@@ -341,8 +341,21 @@
         return;
       }
 
-      drawLabel(hoveredItem, event.position);
+      drawLabel(hoveredItem, screenPosition);
+    }
+
+    const viewerEl = document.getElementById("viewer");
+    viewerEl.addEventListener("mousemove", function(event) {
+      const rect = viewerEl.getBoundingClientRect();
+      handlePointerMove(
+        new OpenSeadragon.Point(
+          event.clientX - rect.left,
+          event.clientY - rect.top
+        )
+      );
     });
+
+    viewerEl.addEventListener("mouseleave", hideLabel);
 
     viewer.addHandler("canvas-exit", hideLabel);
     function enterArchive() {
