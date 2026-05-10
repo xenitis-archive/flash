@@ -1,256 +1,308 @@
- (cd "$(git rev-parse --show-toplevel)" && git apply --3way <<'EOF' 
-diff --git a/index.html b/index.html
-index b6e59ae4b08b59bcf31552dfa1cc3ea92dc2cd6a..df199f40c6b0ebd9288208c06c97b1b17c253780 100644
---- a/index.html
-+++ b/index.html
-@@ -1,59 +1,61 @@
- <!DOCTYPE html>
- <html lang="tr">
- <head>
-   <meta charset="UTF-8" />
-   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
- 
-   <title>FLASH ARCHIVE</title>
- 
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"></script>
- 
-   <style>
-     html, body {
-       margin: 0;
-       width: 100%;
-       height: 100%;
-       overflow: hidden;
-       background: #050505;
-       font-family: Arial, Helvetica, sans-serif;
-     }
-     
-     .flashLabel {
--  position: fixed;
--  z-index: 90;
--  color: rgba(255,255,255,0.78);
--  background: rgba(0,0,0,0.45);
--  border: 1px solid rgba(255,255,255,0.18);
--  backdrop-filter: blur(6px);
--  padding: 8px 10px;
--  font-size: 11px;
--  letter-spacing: 1.5px;
--  pointer-events: none;
--  opacity: 1;
--  transition: opacity 0.2s ease;
--}
-+      position: fixed;
-+      z-index: 90;
-+      color: rgba(255,255,255,0.92);
-+      background: rgba(0,0,0,0.58);
-+      border: 1px solid rgba(255,255,255,0.22);
-+      backdrop-filter: blur(6px);
-+      padding: 8px 10px;
-+      font-size: 11px;
-+      letter-spacing: 1.5px;
-+      pointer-events: none;
-+      opacity: 0;
-+      transition: opacity 0.2s ease;
-+      transform: translate3d(0, 0, 0);
-+      white-space: nowrap;
-+    }
- 
-     #viewer {
-       width: 100vw;
-       height: 100vh;
-       opacity: 0;
-       transition: opacity 1.2s ease;
-     }
- 
-     #viewer.visible {
-       opacity: 1;
-     }
- 
-     #intro {
-       position: fixed;
-       inset: 0;
-       z-index: 1000;
-       background: radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 35%), #050505;
-       color: white;
-       display: flex;
-       justify-content: center;
-       align-items: center;
-       text-align: center;
-       transition: opacity 1s ease, visibility 1s ease;
-     }
- 
-@@ -219,90 +221,123 @@
-     const viewer = OpenSeadragon({
-       id: "viewer",
-       prefixUrl: "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/images/",
-       tileSources: "canvas.dzi",
- 
-       showNavigator: false,
-       showZoomControl: false,
-       showHomeControl: false,
-       showFullPageControl: false,
- 
-       animationTime: 1.0,
-       blendTime: 0.1,
- 
-       visibilityRatio: 1,
-       constrainDuringPan: true,
- 
-       minZoomImageRatio: 0.85,
-       maxZoomPixelRatio: 3,
- 
-       gestureSettingsTouch: {
-         pinchToZoom: true,
-         flickEnabled: true
-       }
-     });
- 
--    viewer.addHandler("canvas-click", function(event) {
--
--  const viewportPoint =
--    viewer.viewport.pointFromPixel(event.position);
--
--  console.log(
--    "X:",
--    viewportPoint.x,
--    "Y:",
--    viewportPoint.y
--  );
--
--});
--const label = document.getElementById("flashLabel");
--
--const labels = [
--  {
--    title: "RITUAL_01",
--    status: "available",
--    x: 0.5,
--    y: 0.5,
--    radius: 0.5
--  }
--];
--
--viewer.addHandler("canvas-move", function(event) {
--  const viewportPoint = viewer.viewport.pointFromPixel(event.position);
--  let found = null;
--
--  labels.forEach(item => {
--    const dx = viewportPoint.x - item.x;
--    const dy = viewportPoint.y - item.y;
--    const distance = Math.sqrt(dx * dx + dy * dy);
--
--    if (distance < item.radius) {
--      found = item;
-+    const label = document.getElementById("flashLabel");
-+    const LABEL_OFFSET = 18;
-+
-+    /*
-+      IMAGE COORDINATES:
-+      - x and y values are normalized between 0 and 1 on the full canvas.
-+      - width/height are optional hover hit-box sizes (also normalized).
-+      - If width/height are omitted, a small default area is used.
-+    */
-+    const labels = [
-+      { title: "THORN BRANCH", status: "available", x: 0.245, y: 0.095, width: 0.075, height: 0.065 },
-+      { title: "SPIKED COLUMN", status: "available", x: 0.335, y: 0.108, width: 0.05, height: 0.09 },
-+      { title: "SUNBURST HALO", status: "available", x: 0.363, y: 0.155, width: 0.07, height: 0.095 },
-+      { title: "CLIMBER FIGURE", status: "available", x: 0.43, y: 0.175, width: 0.06, height: 0.08 },
-+      { title: "SEA DRAGON", status: "available", x: 0.78, y: 0.225, width: 0.14, height: 0.15 },
-+      { title: "SEAHORSE", status: "available", x: 0.53, y: 0.302, width: 0.055, height: 0.1 },
-+      { title: "RIB CAGE", status: "available", x: 0.347, y: 0.364, width: 0.09, height: 0.11 },
-+      { title: "SCARAB", status: "available", x: 0.487, y: 0.425, width: 0.065, height: 0.085 },
-+      { title: "MOTH", status: "available", x: 0.392, y: 0.54, width: 0.14, height: 0.095 },
-+      { title: "SHARK TOTEM", status: "available", x: 0.576, y: 0.538, width: 0.06, height: 0.13 },
-+      { title: "ORNAMENT FRAME", status: "available", x: 0.686, y: 0.44, width: 0.065, height: 0.12 },
-+      { title: "SPIRAL WEB", status: "available", x: 0.838, y: 0.408, width: 0.08, height: 0.09 },
-+      { title: "SHELL FERN", status: "available", x: 0.926, y: 0.446, width: 0.06, height: 0.095 },
-+      { title: "NEST MANDALA", status: "available", x: 0.631, y: 0.625, width: 0.115, height: 0.11 },
-+      { title: "DANDELION PUFF", status: "available", x: 0.658, y: 0.793, width: 0.08, height: 0.085 },
-+      { title: "LILY FLOWER", status: "available", x: 0.744, y: 0.714, width: 0.11, height: 0.11 },
-+      { title: "KOI SCHOOL", status: "available", x: 0.102, y: 0.743, width: 0.15, height: 0.13 },
-+      { title: "SARCOPHAGUS", status: "available", x: 0.304, y: 0.743, width: 0.07, height: 0.12 },
-+      { title: "HANGING BLOOM", status: "available", x: 0.416, y: 0.742, width: 0.06, height: 0.13 },
-+      { title: "TWIN SEEDS", status: "available", x: 0.569, y: 0.84, width: 0.06, height: 0.08 },
-+      { title: "DEEP BLUE RITUAL", status: "available", x: 0.52, y: 0.92, width: 0.22, height: 0.16 }
-+    ];
-+
-+    function isPointInsideLabel(point, item) {
-+      const hitWidth = item.width ?? 0.03;
-+      const hitHeight = item.height ?? 0.03;
-+      const halfWidth = hitWidth / 2;
-+      const halfHeight = hitHeight / 2;
-+
-+      return (
-+        point.x >= item.x - halfWidth &&
-+        point.x <= item.x + halfWidth &&
-+        point.y >= item.y - halfHeight &&
-+        point.y <= item.y + halfHeight
-+      );
-+    }
-+
-+    function hideLabel() {
-+      label.style.opacity = 0;
-     }
--  });
--
--if (found) {
--
--  label.style.background = "red";
--    label.innerHTML = `${found.title}<br>${found.status}`;
--    label.style.left = event.position.x + 18 + "px";
--    label.style.top = event.position.y + 18 + "px";
--    label.style.opacity = 1;
--  } else {
--    label.style.opacity = 0;
--  }
--});
-+
-+    function drawLabel(item, screenPosition) {
-+      label.innerHTML = `${item.title}<br>${item.status}`;
-+
-+      const maxLeft = window.innerWidth - label.offsetWidth - 8;
-+      const maxTop = window.innerHeight - label.offsetHeight - 8;
-+      const nextLeft = Math.min(screenPosition.x + LABEL_OFFSET, maxLeft);
-+      const nextTop = Math.min(screenPosition.y + LABEL_OFFSET, maxTop);
-+
-+      label.style.left = `${Math.max(8, nextLeft)}px`;
-+      label.style.top = `${Math.max(8, nextTop)}px`;
-+      label.style.opacity = 1;
-+    }
-+
-+    viewer.addHandler("canvas-move", function(event) {
-+      const viewportPoint = viewer.viewport.pointFromPixel(event.position);
-+      const imagePoint = viewer.viewport.viewportToImageCoordinates(viewportPoint);
-+      const normalizedPoint = {
-+        x: imagePoint.x / viewer.world.getItemAt(0).getContentSize().x,
-+        y: imagePoint.y / viewer.world.getItemAt(0).getContentSize().y
-+      };
-+
-+      const hoveredItem = labels.find(item => isPointInsideLabel(normalizedPoint, item));
-+
-+      if (!hoveredItem) {
-+        hideLabel();
-+        return;
-+      }
-+
-+      drawLabel(hoveredItem, event.position);
-+    });
-+
-+    viewer.addHandler("canvas-exit", hideLabel);
-     function enterArchive() {
-       document.getElementById("intro").classList.add("hidden");
-       document.getElementById("viewer").classList.add("visible");
-       document.getElementById("topTitle").classList.add("visible");
-       document.getElementById("hint").classList.add("visible");
-       document.getElementById("contactBtn").classList.add("visible");
- 
-       setTimeout(() => {
-         document.getElementById("hint").classList.remove("visible");
-       }, 4000);
-     }
-   </script>
- 
- </body>
- </html>
- 
-EOF
-)
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>FLASH ARCHIVE</title>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"></script>
+
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #050505;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    
+    .flashLabel {
+  position: fixed;
+  z-index: 90;
+  color: rgba(255,255,255,0.78);
+  background: rgba(0,0,0,0.45);
+  border: 1px solid rgba(255,255,255,0.18);
+  backdrop-filter: blur(6px);
+  padding: 8px 10px;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+    #viewer {
+      width: 100vw;
+      height: 100vh;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+
+    #viewer.visible {
+      opacity: 1;
+    }
+
+    #intro {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 35%), #050505;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      transition: opacity 1s ease, visibility 1s ease;
+    }
+
+    #intro.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .intro-inner {
+      max-width: 420px;
+      padding: 24px;
+    }
+
+    .intro-title {
+      font-size: 18px;
+      letter-spacing: 4px;
+      font-weight: 400;
+      margin-bottom: 16px;
+    }
+
+    .intro-text {
+      color: rgba(255,255,255,0.58);
+      font-size: 12px;
+      line-height: 1.6;
+      letter-spacing: 1px;
+      margin-bottom: 28px;
+    }
+
+    button {
+      background: transparent;
+      color: rgba(255,255,255,0.85);
+      border: 1px solid rgba(255,255,255,0.35);
+      padding: 12px 22px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      border-color: rgba(255,255,255,0.85);
+    }
+
+    .top-title {
+      position: fixed;
+      top: 16px;
+      left: 18px;
+      z-index: 40;
+      color: rgba(255,255,255,0.65);
+      font-size: 11px;
+      letter-spacing: 2px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    .top-title.visible {
+      opacity: 1;
+    }
+
+    #hint {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 40;
+      color: rgba(255,255,255,0.45);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      opacity: 0;
+      transition: opacity 1s ease;
+      pointer-events: none;
+    }
+
+    #hint.visible {
+      opacity: 1;
+    }
+
+    .contactBtn {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 80;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 11px;
+      letter-spacing: 2px;
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 10px 14px;
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(6px);
+      opacity: 0;
+      transition: opacity 1s ease, border-color 0.25s ease, color 0.25s ease;
+    }
+
+    .contactBtn.visible {
+      opacity: 1;
+    }
+
+    .contactBtn:hover {
+      color: white;
+      border-color: rgba(255,255,255,0.75);
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      pointer-events: none;
+      opacity: 0.08;
+      background-image:
+        repeating-radial-gradient(circle at 50% 50%,
+        rgba(255,255,255,0.25) 0,
+        rgba(255,255,255,0.25) 1px,
+        transparent 1px,
+        transparent 3px);
+      mix-blend-mode: overlay;
+    }
+
+.lens {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 25;
+  box-shadow:
+    inset 0 0 80px rgba(0,0,0,0.35),
+    inset 0 0 180px rgba(0,0,0,0.22);
+  background:
+    radial-gradient(circle at center,
+      transparent 55%,
+      rgba(0,0,0,0.04) 75%,
+      rgba(0,0,0,0.22) 100%);
+}
+  </style>
+</head>
+
+<body>
+
+  <div id="intro">
+    <div class="intro-inner">
+      <div class="intro-title">FLASH ARCHIVE</div>
+      <div class="intro-text">
+        available flash designs<br>
+        drag / zoom / explore
+      </div>
+      <button onclick="enterArchive()">ENTER ARCHIVE</button>
+    
+    </div>
+  </div>
+
+  <div class="top-title" id="topTitle">FLASH ARCHIVE</div>
+  <div id="viewer"></div>
+  <div id="hint">drag / pinch / zoom</div>
+
+  <a id="contactBtn" class="contactBtn" href="https://www.instagram.com/zenitis.tattoo/" target="_blank">
+    contact / booking
+  </a>
+
+  <div class="noise"></div>
+  <div id="flashLabel" class="flashLabel"></div>
+  <div class="lens"></div>
+
+  <script>
+    const viewer = OpenSeadragon({
+      id: "viewer",
+      prefixUrl: "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/images/",
+      tileSources: "canvas.dzi",
+
+      showNavigator: false,
+      showZoomControl: false,
+      showHomeControl: false,
+      showFullPageControl: false,
+
+      animationTime: 1.0,
+      blendTime: 0.1,
+
+      visibilityRatio: 1,
+      constrainDuringPan: true,
+
+      minZoomImageRatio: 0.85,
+      maxZoomPixelRatio: 3,
+
+      gestureSettingsTouch: {
+        pinchToZoom: true,
+        flickEnabled: true
+      }
+    });
+
+    viewer.addHandler("canvas-click", function(event) {
+
+  const viewportPoint =
+    viewer.viewport.pointFromPixel(event.position);
+
+  console.log(
+    "X:",
+    viewportPoint.x,
+    "Y:",
+    viewportPoint.y
+  );
+
+});
+const label = document.getElementById("flashLabel");
+
+const labels = [
+  {
+    title: "RITUAL_01",
+    status: "available",
+    x: 0.5,
+    y: 0.5,
+    radius: 0.5
+  }
+];
+
+viewer.addHandler("canvas-move", function(event) {
+  const viewportPoint = viewer.viewport.pointFromPixel(event.position);
+  let found = null;
+
+  labels.forEach(item => {
+    const dx = viewportPoint.x - item.x;
+    const dy = viewportPoint.y - item.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance < item.radius) {
+      found = item;
+    }
+  });
+
+if (found) {
+
+  label.style.background = "red";
+    label.innerHTML = `${found.title}<br>${found.status}`;
+    label.style.left = event.position.x + 18 + "px";
+    label.style.top = event.position.y + 18 + "px";
+    label.style.opacity = 1;
+  } else {
+    label.style.opacity = 0;
+  }
+});
+    function enterArchive() {
+      document.getElementById("intro").classList.add("hidden");
+      document.getElementById("viewer").classList.add("visible");
+      document.getElementById("topTitle").classList.add("visible");
+      document.getElementById("hint").classList.add("visible");
+      document.getElementById("contactBtn").classList.add("visible");
+
+      setTimeout(() => {
+        document.getElementById("hint").classList.remove("visible");
+      }, 4000);
+    }
+  </script>
+
+</body>
+</html>
