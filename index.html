@@ -29,7 +29,7 @@
   font-size: 11px;
   letter-spacing: 1.5px;
   pointer-events: none;
-  opacity: 0;
+  opacity: 1;
   transition: opacity 0.2s ease;
 }
 
@@ -280,7 +280,9 @@ viewer.addHandler("canvas-move", function(event) {
     }
   });
 
-  if (found) {
+if (found) {
+
+  label.style.background = "red";
     label.innerHTML = `${found.title}<br>${found.status}`;
     label.style.left = event.position.x + 18 + "px";
     label.style.top = event.position.y + 18 + "px";
