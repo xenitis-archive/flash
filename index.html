@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>Flash Archive</title>
 
@@ -15,72 +15,221 @@
       height: 100%;
       overflow: hidden;
       background: #050505;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     #viewer {
       width: 100vw;
       height: 100vh;
+      opacity: 0;
+      transition: opacity 1.2s ease;
     }
 
-    .title {
+    #viewer.visible {
+      opacity: 1;
+    }
+
+    #intro {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background:
+        radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 35%),
+        #050505;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      transition: opacity 1s ease, visibility 1s ease;
+    }
+
+    #intro.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .intro-inner {
+      max-width: 420px;
+      padding: 24px;
+    }
+
+    .intro-title {
+      font-size: 18px;
+      letter-spacing: 4px;
+      font-weight: 400;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+
+    .intro-text {
+      color: rgba(255,255,255,0.58);
+      font-size: 12px;
+      line-height: 1.6;
+      letter-spacing: 1px;
+      margin-bottom: 28px;
+    }
+
+    button {
+      background: transparent;
+      color: rgba(255,255,255,0.85);
+      border: 1px solid rgba(255,255,255,0.35);
+      padding: 12px 22px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    button:hover {
+      border-color: rgba(255,255,255,0.85);
+    }
+
+    .top-title {
       position: fixed;
       top: 16px;
-      left: 20px;
-
-      color: rgba(255,255,255,0.7);
-
-      font-family: Arial, sans-serif;
-      font-size: 12px;
+      left: 18px;
+      z-index: 20;
+      color: rgba(255,255,255,0.65);
+      font-size: 11px;
       letter-spacing: 2px;
-
-      z-index: 999;
+      text-transform: uppercase;
       pointer-events: none;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    .top-title.visible {
+      opacity: 1;
+    }
+
+    #hint {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      color: rgba(255,255,255,0.45);
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      opacity: 0;
+      transition: opacity 1s ease;
+      pointer-events: none;
+    }
+
+    #hint.visible {
+      opacity: 1;
+    }
+
+    #soundBtn {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 30;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    #soundBtn.visible {
+      opacity: 1;
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      pointer-events: none;
+      opacity: 0.08;
+      background-image:
+        repeating-radial-gradient(circle at 50% 50%,
+        rgba(255,255,255,0.25) 0,
+        rgba(255,255,255,0.25) 1px,
+        transparent 1px,
+        transparent 3px);
+      mix-blend-mode: overlay;
     }
   </style>
 </head>
 
 <body>
 
-<div class="title">
-FLASH ARCHIVE
-</div>
+  <div id="intro">
+    <div class="intro-inner">
+      <div class="intro-title">Flash Archive</div>
+      <div class="intro-text">
+        available flash designs<br>
+        drag / zoom / explore
+      </div>
+      <button onclick="enterArchive()">Enter Archive</button>
+    </div>
+  </div>
 
-<div id="viewer"></div>
+  <div class="top-title" id="topTitle">Flash Archive</div>
+  <div id="viewer"></div>
+  <div id="hint">drag / pinch / zoom</div>
+  <button id="soundBtn" onclick="toggleSound()">Sound Off</button>
+  <div class="noise"></div>
 
-<script>
+  <audio id="ambient" loop>
+    <source src="ambient.mp3" type="audio/mpeg">
+  </audio>
 
-OpenSeadragon({
+  <script>
+    const viewer = OpenSeadragon({
+      id: "viewer",
+      prefixUrl: "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/images/",
+      tileSources: "canvas.dzi",
 
-    id: "viewer",
+      showNavigator: false,
+      showZoomControl: false,
+      showHomeControl: false,
+      showFullPageControl: false,
 
-    prefixUrl: "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/images/",
+      animationTime: 1.0,
+      blendTime: 0.1,
 
-    tileSources: "canvas.dzi",
+      visibilityRatio: 1,
+      constrainDuringPan: true,
 
-    showNavigator: false,
+      minZoomImageRatio: 0.85,
+      maxZoomPixelRatio: 3,
 
-    showZoomControl: false,
-    showHomeControl: false,
-    showFullPageControl: false,
+      gestureSettingsTouch: {
+        pinchToZoom: true,
+        flickEnabled: true
+      }
+    });
 
-    animationTime: 1.2,
-    blendTime: 0.1,
+    const audio = document.getElementById("ambient");
+    const soundBtn = document.getElementById("soundBtn");
+    let soundOn = false;
 
-    minZoomImageRatio: 0.8,
+    function enterArchive() {
+      document.getElementById("intro").classList.add("hidden");
+      document.getElementById("viewer").classList.add("visible");
+      document.getElementById("topTitle").classList.add("visible");
+      document.getElementById("hint").classList.add("visible");
+      soundBtn.classList.add("visible");
 
-    maxZoomPixelRatio: 3,
-
-    visibilityRatio: 1,
-
-    constrainDuringPan: true,
-
-    gestureSettingsTouch: {
-      pinchToZoom: true
+      setTimeout(() => {
+        document.getElementById("hint").classList.remove("visible");
+      }, 4000);
     }
 
-});
-
-</script>
+    function toggleSound() {
+      if (!soundOn) {
+        audio.volume = 0.25;
+        audio.play();
+        soundOn = true;
+        soundBtn.textContent = "Sound On";
+      } else {
+        audio.pause();
+        soundOn = false;
+        soundBtn.textContent = "Sound Off";
+      }
+    }
+  </script>
 
 </body>
 </html>
