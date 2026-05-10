@@ -139,16 +139,18 @@
       .lens {
   position: fixed;
   inset: 0;
-
   pointer-events: none;
-
   z-index: 15;
+
+  box-shadow:
+    inset 0 0 120px rgba(0,0,0,0.65),
+    inset 0 0 260px rgba(0,0,0,0.45);
 
   background:
     radial-gradient(circle at center,
       transparent 45%,
-      rgba(0,0,0,0.12) 70%,
-      rgba(0,0,0,0.35) 100%);
+      rgba(0,0,0,0.10) 70%,
+      rgba(0,0,0,0.45) 100%);
 }
       position: fixed;
       inset: 0;
@@ -205,6 +207,32 @@
 .hotspot:hover {
   box-shadow: 0 0 40px rgba(255,255,255,0.08);
 }
+    .contactBtn {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 80;
+
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-family: Arial, sans-serif;
+
+  border: 1px solid rgba(255,255,255,0.25);
+  padding: 10px 14px;
+
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(6px);
+
+  transition: 0.25s ease;
+}
+
+.contactBtn:hover {
+  color: white;
+  border-color: rgba(255,255,255,0.75);
+}
   </style>
 </head>
 
@@ -213,7 +241,6 @@
   <div class="hotspot"
      data-title="RITUAL_01"
      style="left:40%; top:55%;"
-     onclick="window.open('https://www.instagram.com/xenitis.x/')">
 </div>
 
   <div id="intro">
@@ -231,6 +258,9 @@
   <div id="viewer"></div>
   <div id="hint">drag / pinch / zoom</div>
   <button id="soundBtn" onclick="toggleSound()">Sound Off</button>
+    <a class="contactBtn" href="https://www.instagram.com/zenitis.tattoo/" target="_blank">
+  contact / booking
+</a>
   <div class="noise"></div>
 
   <audio id="ambient" loop>
