@@ -136,6 +136,20 @@
     }
 
     .noise {
+      .lens {
+  position: fixed;
+  inset: 0;
+
+  pointer-events: none;
+
+  z-index: 15;
+
+  background:
+    radial-gradient(circle at center,
+      transparent 45%,
+      rgba(0,0,0,0.12) 70%,
+      rgba(0,0,0,0.35) 100%);
+}
       position: fixed;
       inset: 0;
       z-index: 10;
