@@ -277,6 +277,20 @@
       }
     });
 
+    viewer.addHandler("canvas-click", function(event) {
+
+  const viewportPoint =
+    viewer.viewport.pointFromPixel(event.position);
+
+  console.log(
+    "X:",
+    viewportPoint.x,
+    "Y:",
+    viewportPoint.y
+  );
+
+});
+
     function enterArchive() {
       document.getElementById("intro").classList.add("hidden");
       document.getElementById("viewer").classList.add("visible");
