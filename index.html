@@ -242,6 +242,20 @@
         flickEnabled: true
       }
     });
+    
+    viewer.addHandler("canvas-click", function(event) {
+
+  const viewportPoint =
+    viewer.viewport.pointFromPixel(event.position);
+
+  console.log(
+    "X:",
+    viewportPoint.x,
+    "Y:",
+    viewportPoint.y
+  );
+
+});
 
     const label = document.getElementById("flashLabel");
     const LABEL_OFFSET = 18;
