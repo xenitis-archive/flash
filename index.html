@@ -356,6 +356,43 @@
     });
 
     viewerEl.addEventListener("mouseleave", hideLabel);
+    viewerEl.addEventListener("touchend", hideLabel);
+
+    const isTouchDevice =
+      window.matchMedia("(pointer: coarse)").matches ||
+      "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0;
+
+    function handleMobileProximity() {
+      if (!isTouchDevice || !viewer.viewport) return;
+      if (viewer.viewport.getZoom() < viewer.viewport.getHomeZoom() * 1.35) {
+        hideLabel();
+        return;
+      }
+
+      const centerViewport = viewer.viewport.getCenter(true);
+      const centerImage = viewer.viewport.viewportToImageCoordinates(centerViewport);
+      const tiledImage = viewer.world.getItemAt(0);
+      if (!tiledImage) return;
+
+      const contentSize = tiledImage.getContentSize();
+      const normalizedCenter = {
+        x: centerImage.x / contentSize.x,
+        y: centerImage.y / contentSize.y
+      };
+
+      const nearbyItem = labels.find(item => isPointInsideLabel(normalizedCenter, item));
+      if (!nearbyItem) {
+        hideLabel();
+        return;
+      }
+
+      drawLabel(nearbyItem, new OpenSeadragon.Point(window.innerWidth / 2, window.innerHeight / 2));
+    }
+
+    viewer.addHandler("animation", handleMobileProximity);
+    viewer.addHandler("zoom", handleMobileProximity);
+    viewer.addHandler("pan", handleMobileProximity);
 
     viewer.addHandler("canvas-exit", hideLabel);
     function enterArchive() {
