@@ -19,19 +19,21 @@
     }
     
     .flashLabel {
-  position: fixed;
-  z-index: 90;
-  color: rgba(255,255,255,0.78);
-  background: rgba(0,0,0,0.45);
-  border: 1px solid rgba(255,255,255,0.18);
-  backdrop-filter: blur(6px);
-  padding: 8px 10px;
-  font-size: 11px;
-  letter-spacing: 1.5px;
-  pointer-events: none;
-  opacity: 1;
-  transition: opacity 0.2s ease;
-}
+      position: fixed;
+      z-index: 90;
+      color: rgba(255,255,255,0.92);
+      background: rgba(0,0,0,0.58);
+      border: 1px solid rgba(255,255,255,0.22);
+      backdrop-filter: blur(6px);
+      padding: 8px 10px;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      transform: translate3d(0, 0, 0);
+      white-space: nowrap;
+    }
 
     #viewer {
       width: 100vw;
@@ -241,56 +243,158 @@
       }
     });
 
-    viewer.addHandler("canvas-click", function(event) {
+    const label = document.getElementById("flashLabel");
+    const LABEL_OFFSET = 18;
 
-  const viewportPoint =
-    viewer.viewport.pointFromPixel(event.position);
+    /*
+      IMAGE COORDINATES:
+      - x and y values are normalized between 0 and 1 on the full canvas.
+      - width/height are optional hover hit-box sizes (also normalized).
+      - If width/height are omitted, a small default area is used.
+    */
+    const labels = [
+      { title: "THORN BRANCH", status: "available", x: 0.245, y: 0.095, width: 0.10, height: 0.085 },
+      { title: "SPIKED COLUMN", status: "available", x: 0.335, y: 0.108, width: 0.075, height: 0.11 },
+      { title: "SUNBURST HALO", status: "available", x: 0.363, y: 0.155, width: 0.095, height: 0.125 },
+      { title: "CLIMBER FIGURE", status: "available", x: 0.43, y: 0.175, width: 0.085, height: 0.10 },
+      { title: "SEA DRAGON", status: "available", x: 0.78, y: 0.225, width: 0.16, height: 0.17 },
+      { title: "SEAHORSE", status: "available", x: 0.53, y: 0.302, width: 0.08, height: 0.13 },
+      { title: "RIB CAGE", status: "available", x: 0.347, y: 0.364, width: 0.11, height: 0.13 },
+      { title: "SCARAB", status: "available", x: 0.487, y: 0.425, width: 0.09, height: 0.10 },
+      { title: "MOTH", status: "available", x: 0.392, y: 0.54, width: 0.16, height: 0.115 },
+      { title: "SHARK TOTEM", status: "available", x: 0.576, y: 0.538, width: 0.09, height: 0.15 },
+      { title: "ORNAMENT FRAME", status: "available", x: 0.686, y: 0.44, width: 0.085, height: 0.14 },
+      { title: "SPIRAL WEB", status: "available", x: 0.838, y: 0.408, width: 0.105, height: 0.115 },
+      { title: "SHELL FERN", status: "available", x: 0.926, y: 0.446, width: 0.085, height: 0.12 },
+      { title: "NEST MANDALA", status: "available", x: 0.631, y: 0.625, width: 0.14, height: 0.135 },
+      { title: "DANDELION PUFF", status: "available", x: 0.658, y: 0.793, width: 0.10, height: 0.105 },
+      { title: "LILY FLOWER", status: "available", x: 0.744, y: 0.714, width: 0.13, height: 0.13 },
+      { title: "KOI SCHOOL", status: "available", x: 0.102, y: 0.743, width: 0.17, height: 0.15 },
+      { title: "SARCOPHAGUS", status: "available", x: 0.304, y: 0.743, width: 0.095, height: 0.14 },
+      { title: "HANGING BLOOM", status: "available", x: 0.416, y: 0.742, width: 0.085, height: 0.15 },
+      { title: "TWIN SEEDS", status: "available", x: 0.569, y: 0.84, width: 0.085, height: 0.105 },
+      { title: "DEEP BLUE RITUAL", status: "available", x: 0.52, y: 0.92, width: 0.24, height: 0.18 }
+    ];
 
-  console.log(
-    "X:",
-    viewportPoint.x,
-    "Y:",
-    viewportPoint.y
-  );
+    function isPointInsideLabel(point, item) {
+      const hitWidth = item.width ?? 0.03;
+      const hitHeight = item.height ?? 0.03;
+      const halfWidth = hitWidth / 2;
+      const halfHeight = hitHeight / 2;
 
-});
-const label = document.getElementById("flashLabel");
-
-const labels = [
-  {
-    title: "RITUAL_01",
-    status: "available",
-    x: 0.5,
-    y: 0.5,
-    radius: 0.5
-  }
-];
-
-viewer.addHandler("canvas-move", function(event) {
-  const viewportPoint = viewer.viewport.pointFromPixel(event.position);
-  let found = null;
-
-  labels.forEach(item => {
-    const dx = viewportPoint.x - item.x;
-    const dy = viewportPoint.y - item.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-
-    if (distance < item.radius) {
-      found = item;
+      return (
+        point.x >= item.x - halfWidth &&
+        point.x <= item.x + halfWidth &&
+        point.y >= item.y - halfHeight &&
+        point.y <= item.y + halfHeight
+      );
     }
-  });
 
-if (found) {
+    function hideLabel() {
+      label.style.opacity = 0;
+    }
 
-  label.style.background = "red";
-    label.innerHTML = `${found.title}<br>${found.status}`;
-    label.style.left = event.position.x + 18 + "px";
-    label.style.top = event.position.y + 18 + "px";
-    label.style.opacity = 1;
-  } else {
-    label.style.opacity = 0;
-  }
-});
+    function drawLabel(item, screenPosition) {
+      label.innerHTML = `${item.title}<br>${item.status}`;
+
+      const maxLeft = window.innerWidth - label.offsetWidth - 8;
+      const maxTop = window.innerHeight - label.offsetHeight - 8;
+      const nextLeft = Math.min(screenPosition.x + LABEL_OFFSET, maxLeft);
+      const nextTop = Math.min(screenPosition.y + LABEL_OFFSET, maxTop);
+
+      label.style.left = `${Math.max(8, nextLeft)}px`;
+      label.style.top = `${Math.max(8, nextTop)}px`;
+      label.style.opacity = 1;
+    }
+
+    function getNormalizedPoint(position) {
+      const tiledImage = viewer.world.getItemAt(0);
+      if (!tiledImage) return null;
+
+      const viewportPoint = viewer.viewport.pointFromPixel(position);
+      const imagePoint = viewer.viewport.viewportToImageCoordinates(viewportPoint);
+      const contentSize = tiledImage.getContentSize();
+      if (!contentSize?.x || !contentSize?.y) return null;
+
+      return {
+        x: imagePoint.x / contentSize.x,
+        y: imagePoint.y / contentSize.y
+      };
+    }
+
+    function handlePointerMove(screenPosition) {
+      const normalizedPoint = getNormalizedPoint(screenPosition);
+      if (!normalizedPoint) {
+        hideLabel();
+        return;
+      }
+
+      if (normalizedPoint.x < 0 || normalizedPoint.x > 1 || normalizedPoint.y < 0 || normalizedPoint.y > 1) {
+        hideLabel();
+        return;
+      }
+
+      const hoveredItem = labels.find(item => isPointInsideLabel(normalizedPoint, item));
+
+      if (!hoveredItem) {
+        hideLabel();
+        return;
+      }
+
+      drawLabel(hoveredItem, screenPosition);
+    }
+
+    const viewerEl = document.getElementById("viewer");
+    viewerEl.addEventListener("mousemove", function(event) {
+      const rect = viewerEl.getBoundingClientRect();
+      handlePointerMove(
+        new OpenSeadragon.Point(
+          event.clientX - rect.left,
+          event.clientY - rect.top
+        )
+      );
+    });
+
+    viewerEl.addEventListener("mouseleave", hideLabel);
+    viewerEl.addEventListener("touchend", hideLabel);
+
+    const isTouchDevice =
+      window.matchMedia("(pointer: coarse)").matches ||
+      "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0;
+
+    function handleMobileProximity() {
+      if (!isTouchDevice || !viewer.viewport) return;
+      if (viewer.viewport.getZoom() < viewer.viewport.getHomeZoom() * 1.35) {
+        hideLabel();
+        return;
+      }
+
+      const centerViewport = viewer.viewport.getCenter(true);
+      const centerImage = viewer.viewport.viewportToImageCoordinates(centerViewport);
+      const tiledImage = viewer.world.getItemAt(0);
+      if (!tiledImage) return;
+
+      const contentSize = tiledImage.getContentSize();
+      const normalizedCenter = {
+        x: centerImage.x / contentSize.x,
+        y: centerImage.y / contentSize.y
+      };
+
+      const nearbyItem = labels.find(item => isPointInsideLabel(normalizedCenter, item));
+      if (!nearbyItem) {
+        hideLabel();
+        return;
+      }
+
+      drawLabel(nearbyItem, new OpenSeadragon.Point(window.innerWidth / 2, window.innerHeight / 2));
+    }
+
+    viewer.addHandler("animation", handleMobileProximity);
+    viewer.addHandler("zoom", handleMobileProximity);
+    viewer.addHandler("pan", handleMobileProximity);
+
+    viewer.addHandler("canvas-exit", hideLabel);
     function enterArchive() {
       document.getElementById("intro").classList.add("hidden");
       document.getElementById("viewer").classList.add("visible");
