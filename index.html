@@ -247,7 +247,7 @@
 
     .galleryBackdrop {
       z-index: -3;
-      background: var(--gallery-bg, url("gallery-assets/gallery-1.png")) center / cover;
+      background: var(--gallery-bg, url("gallery/dövme-1.png")) center / cover;
       filter: blur(36px) saturate(1.12);
       opacity: 0.74;
       transform: scale(1.12);
@@ -470,7 +470,7 @@
       <button class="galleryNav galleryPrev" type="button" onclick="changeGallerySlide(-1)" aria-label="Previous image"><span aria-hidden="true">‹</span></button>
 
       <figure id="galleryFrame" class="galleryFrame">
-        <img id="galleryImage" src="gallery-assets/gallery-1.png" alt="Flash design 1" draggable="false" />
+        <img id="galleryImage" src="gallery/dövme-1.png" alt="Flash design 1" draggable="false" />
       </figure>
 
       <button class="galleryNav galleryNext" type="button" onclick="changeGallerySlide(1)" aria-label="Next image"><span aria-hidden="true">›</span></button>
@@ -674,10 +674,10 @@
 
     viewer.addHandler("canvas-exit", hideLabel);
     const gallerySlides = [
-      { main: "gallery-assets/gallery-1.png", mockup: "gallery-assets/mockup-1.png", alt: "Flash design 1" },
-      { main: "gallery-assets/gallery-2.png", mockup: "gallery-assets/mockup-2.png", alt: "Flash design 2" },
-      { main: "gallery-assets/gallery-3.png", mockup: "gallery-assets/mockup-3.png", alt: "Flash design 3" },
-      { main: "gallery-assets/gallery-4.png", mockup: "gallery-assets/mockup-4.png", alt: "Flash design 4" }
+      { main: "gallery/dövme-1.png", mockup: "gallery/mockup-1.png", alt: "Flash design 1" },
+      { main: "gallery/dövme-2.png", mockup: "gallery/mockup-2.png", alt: "Flash design 2" },
+      { main: "gallery/dövme-3.png", mockup: "gallery/mockup-3.png", alt: "Flash design 3" },
+      { main: "gallery/dövme-4.png", mockup: "gallery/mockup-4.png", alt: "Flash design 4" }
     ];
 
     const galleryOverlay = document.getElementById("galleryOverlay");
