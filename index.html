@@ -159,6 +159,23 @@
       border-color: rgba(255,255,255,0.75);
     }
 
+
+    .menuBtn {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 80;
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(6px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1s ease, border-color 0.25s ease, color 0.25s ease;
+    }
+
+    .menuBtn.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
     .noise {
       position: fixed;
       inset: 0;
@@ -188,6 +205,240 @@
       rgba(0,0,0,0.04) 75%,
       rgba(0,0,0,0.22) 100%);
 }
+
+    .intro-actions {
+      display: grid;
+      gap: 12px;
+      justify-items: center;
+    }
+
+    .intro-actions button {
+      min-width: 190px;
+    }
+
+    .galleryOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+      align-items: center;
+      justify-items: center;
+      padding: 72px clamp(16px, 4vw, 52px) 24px;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
+      isolation: isolate;
+      transition: opacity 0.32s ease, visibility 0.32s ease;
+    }
+
+    .galleryOverlay.active {
+      opacity: 1;
+      pointer-events: auto;
+      visibility: visible;
+    }
+
+    .galleryBackdrop,
+    .galleryShade {
+      position: absolute;
+      inset: 0;
+    }
+
+    .galleryBackdrop {
+      z-index: -3;
+      background: var(--gallery-bg, url("gallery-assets/gallery-1.png")) center / cover;
+      filter: blur(36px) saturate(1.12);
+      opacity: 0.74;
+      transform: scale(1.12);
+      transition: background-image 0.2s ease;
+    }
+
+    .galleryShade {
+      z-index: -2;
+      background:
+        radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 38%),
+        linear-gradient(180deg, rgba(5,5,5,0.66), rgba(5,5,5,0.22) 42%, rgba(5,5,5,0.78));
+    }
+
+    .galleryClose,
+    .galleryNav {
+      width: 46px;
+      height: 46px;
+      padding: 0;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.35);
+      border-color: rgba(255,255,255,0.28);
+      backdrop-filter: blur(8px);
+      font-size: 30px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .galleryClose span,
+    .galleryNav span {
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0;
+    }
+
+    .galleryClose span::before,
+    .galleryNav span::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border: solid currentColor;
+      border-width: 0 2px 2px 0;
+    }
+
+    .galleryClose span::before,
+    .galleryPrev span::before {
+      transform: rotate(135deg);
+    }
+
+    .galleryNext span::before {
+      transform: rotate(-45deg);
+    }
+
+    .galleryClose {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      z-index: 3;
+    }
+
+    .galleryStage {
+      position: relative;
+      z-index: 1;
+      width: min(1240px, 100%);
+      display: grid;
+      grid-template-columns: 46px minmax(0, 1fr) 46px;
+      gap: clamp(12px, 2.5vw, 28px);
+      align-items: center;
+      touch-action: pan-y;
+      user-select: none;
+    }
+
+    .galleryFrame {
+      width: 100%;
+      max-height: min(68vh, 760px);
+      aspect-ratio: 16 / 10;
+      margin: 0;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      background: rgba(0,0,0,0.28);
+      border: 1px solid rgba(255,255,255,0.16);
+      box-shadow: 0 28px 90px rgba(0,0,0,0.48);
+      transform: translateX(0);
+      opacity: 1;
+      transition: opacity 0.18s ease, transform 0.2s ease, background 0.18s ease;
+    }
+
+    .galleryFrame.is-preview {
+      background: rgba(255,255,255,0.08);
+    }
+
+    .galleryFrame.is-moving-next {
+      opacity: 0;
+      transform: translateX(-28px);
+    }
+
+    .galleryFrame.is-moving-prev {
+      opacity: 0;
+      transform: translateX(28px);
+    }
+
+    .galleryFrame img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+    }
+
+    .galleryFooter {
+      position: relative;
+      z-index: 1;
+      width: min(1240px, 100%);
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: minmax(82px, 1fr) auto minmax(82px, 1fr);
+      align-items: center;
+      gap: 16px;
+    }
+
+    .galleryCounter {
+      color: rgba(255,255,255,0.78);
+      font-size: 11px;
+      letter-spacing: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .previewBtn {
+      min-width: 136px;
+      background: rgba(0,0,0,0.35);
+      backdrop-filter: blur(8px);
+    }
+
+    .previewBtn.active {
+      color: #050505;
+      background: rgba(255,255,255,0.92);
+      border-color: rgba(255,255,255,0.92);
+    }
+
+    .galleryDots {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .galleryDot {
+      width: 8px;
+      height: 8px;
+      min-width: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.36);
+      transition: width 0.18s ease, background 0.18s ease;
+    }
+
+    .galleryDot.active {
+      width: 28px;
+      background: rgba(255,255,255,0.92);
+    }
+
+    @media (max-width: 760px) {
+      .galleryOverlay {
+        padding: 72px 16px 24px;
+      }
+
+      .galleryStage {
+        grid-template-columns: 1fr;
+      }
+
+      .galleryNav {
+        display: none;
+      }
+
+      .galleryFrame {
+        max-height: 62vh;
+      }
+
+      .galleryFooter {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+
+      .galleryDots {
+        justify-content: center;
+      }
+    }
   </style>
 </head>
 
@@ -200,12 +451,39 @@
         available flash designs<br>
         drag / zoom / explore
       </div>
-      <button onclick="enterArchive()">ENTER ARCHIVE</button>
+      <div class="intro-actions">
+        <button onclick="enterArchive()">ENTER ARCHIVE</button>
+        <button onclick="openGallery()">GALLERY</button>
+      </div>
     
     </div>
   </div>
 
+
+  <section id="galleryOverlay" class="galleryOverlay" aria-label="Flash design gallery" aria-hidden="true">
+    <div id="galleryBackdrop" class="galleryBackdrop" aria-hidden="true"></div>
+    <div class="galleryShade" aria-hidden="true"></div>
+
+    <button class="galleryClose" type="button" onclick="closeGallery()" aria-label="Back"><span aria-hidden="true">‹</span></button>
+
+    <div id="galleryStage" class="galleryStage">
+      <button class="galleryNav galleryPrev" type="button" onclick="changeGallerySlide(-1)" aria-label="Previous image"><span aria-hidden="true">‹</span></button>
+
+      <figure id="galleryFrame" class="galleryFrame">
+        <img id="galleryImage" src="gallery-assets/gallery-1.png" alt="Flash design 1" draggable="false" />
+      </figure>
+
+      <button class="galleryNav galleryNext" type="button" onclick="changeGallerySlide(1)" aria-label="Next image"><span aria-hidden="true">›</span></button>
+    </div>
+
+    <div class="galleryFooter">
+      <div id="galleryCounter" class="galleryCounter">01 / 04</div>
+      <button id="previewBtn" class="previewBtn" type="button" onclick="toggleGalleryPreview()">PREVIEW</button>
+      <div id="galleryDots" class="galleryDots" aria-label="Gallery image selection"></div>
+    </div>
+  </section>
   <div class="top-title" id="topTitle">FLASH ARCHIVE</div>
+  <button id="menuBtn" class="menuBtn" type="button" onclick="returnToMenu()">MENU</button>
   <div id="viewer"></div>
   <div id="hint">drag / pinch / zoom</div>
 
@@ -395,16 +673,150 @@
     viewer.addHandler("pan", handleMobileProximity);
 
     viewer.addHandler("canvas-exit", hideLabel);
+    const gallerySlides = [
+      { main: "gallery-assets/gallery-1.png", mockup: "gallery-assets/mockup-1.png", alt: "Flash design 1" },
+      { main: "gallery-assets/gallery-2.png", mockup: "gallery-assets/mockup-2.png", alt: "Flash design 2" },
+      { main: "gallery-assets/gallery-3.png", mockup: "gallery-assets/mockup-3.png", alt: "Flash design 3" },
+      { main: "gallery-assets/gallery-4.png", mockup: "gallery-assets/mockup-4.png", alt: "Flash design 4" }
+    ];
+
+    const galleryOverlay = document.getElementById("galleryOverlay");
+    const galleryBackdrop = document.getElementById("galleryBackdrop");
+    const galleryStage = document.getElementById("galleryStage");
+    const galleryFrame = document.getElementById("galleryFrame");
+    const galleryImage = document.getElementById("galleryImage");
+    const galleryCounter = document.getElementById("galleryCounter");
+    const previewBtn = document.getElementById("previewBtn");
+    const galleryDots = document.getElementById("galleryDots");
+
+    let galleryIndex = 0;
+    let galleryPreviewOpen = false;
+    let galleryPointerDown = false;
+    let galleryStartX = 0;
+    let galleryDragDistance = 0;
+
+    gallerySlides.forEach((slide, index) => {
+      [slide.main, slide.mockup].forEach((src) => {
+        const image = new Image();
+        image.src = src;
+      });
+
+      const dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "galleryDot";
+      dot.setAttribute("aria-label", `${index + 1}. image`);
+      dot.addEventListener("click", () => setGallerySlide(index, index >= galleryIndex ? 1 : -1));
+      galleryDots.append(dot);
+    });
+
+    function renderGallery() {
+      const slide = gallerySlides[galleryIndex];
+      const src = galleryPreviewOpen ? slide.mockup : slide.main;
+
+      galleryImage.src = src;
+      galleryImage.alt = galleryPreviewOpen ? `${slide.alt} mockup preview` : slide.alt;
+      galleryBackdrop.style.setProperty("--gallery-bg", `url("${src}")`);
+      galleryCounter.textContent = `${String(galleryIndex + 1).padStart(2, "0")} / ${String(gallerySlides.length).padStart(2, "0")}`;
+      previewBtn.textContent = galleryPreviewOpen ? "MAIN IMAGE" : "PREVIEW";
+      previewBtn.classList.toggle("active", galleryPreviewOpen);
+      galleryFrame.classList.toggle("is-preview", galleryPreviewOpen);
+
+      [...galleryDots.children].forEach((dot, index) => {
+        dot.classList.toggle("active", index === galleryIndex);
+      });
+    }
+
+    function setGallerySlide(index, direction = 1) {
+      const nextIndex = (index + gallerySlides.length) % gallerySlides.length;
+      const movementClass = direction >= 0 ? "is-moving-next" : "is-moving-prev";
+      galleryPreviewOpen = false;
+      galleryFrame.classList.add(movementClass);
+
+      window.setTimeout(() => {
+        galleryIndex = nextIndex;
+        renderGallery();
+        galleryFrame.classList.remove(movementClass);
+      }, 160);
+    }
+
+    function changeGallerySlide(direction) {
+      setGallerySlide(galleryIndex + direction, direction);
+    }
+
+    function toggleGalleryPreview() {
+      galleryPreviewOpen = !galleryPreviewOpen;
+      renderGallery();
+    }
+
+    function openGallery() {
+      galleryPreviewOpen = false;
+      galleryOverlay.classList.add("active");
+      galleryOverlay.setAttribute("aria-hidden", "false");
+      renderGallery();
+    }
+
+    function closeGallery() {
+      galleryOverlay.classList.remove("active");
+      galleryOverlay.setAttribute("aria-hidden", "true");
+    }
+
+    galleryStage.addEventListener("pointerdown", function(event) {
+      if (event.target.closest("button")) return;
+
+      galleryPointerDown = true;
+      galleryStartX = event.clientX;
+      galleryDragDistance = 0;
+      galleryStage.setPointerCapture(event.pointerId);
+    });
+
+    galleryStage.addEventListener("pointermove", function(event) {
+      if (!galleryPointerDown) return;
+      galleryDragDistance = event.clientX - galleryStartX;
+    });
+
+    galleryStage.addEventListener("pointerup", function() {
+      if (!galleryPointerDown) return;
+      galleryPointerDown = false;
+
+      if (Math.abs(galleryDragDistance) < 48) return;
+      changeGallerySlide(galleryDragDistance < 0 ? 1 : -1);
+    });
+
+    galleryStage.addEventListener("pointercancel", function() {
+      galleryPointerDown = false;
+    });
+
+    window.addEventListener("keydown", function(event) {
+      if (!galleryOverlay.classList.contains("active")) return;
+
+      if (event.key === "ArrowRight") changeGallerySlide(1);
+      if (event.key === "ArrowLeft") changeGallerySlide(-1);
+      if (event.key === "Escape") closeGallery();
+    });
+
+    renderGallery();
     function enterArchive() {
       document.getElementById("intro").classList.add("hidden");
       document.getElementById("viewer").classList.add("visible");
       document.getElementById("topTitle").classList.add("visible");
       document.getElementById("hint").classList.add("visible");
       document.getElementById("contactBtn").classList.add("visible");
+      document.getElementById("menuBtn").classList.add("visible");
 
       setTimeout(() => {
         document.getElementById("hint").classList.remove("visible");
       }, 4000);
+    }
+
+    function returnToMenu() {
+      closeGallery();
+      hideLabel();
+      document.getElementById("intro").classList.remove("hidden");
+      document.getElementById("viewer").classList.remove("visible");
+      document.getElementById("topTitle").classList.remove("visible");
+      document.getElementById("hint").classList.remove("visible");
+      document.getElementById("contactBtn").classList.remove("visible");
+      document.getElementById("menuBtn").classList.remove("visible");
     }
   </script>
 
