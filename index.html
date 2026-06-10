@@ -216,6 +216,211 @@
       min-width: 190px;
     }
 
+
+    .calculatorOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1250;
+      display: grid;
+      place-items: center;
+      padding: 72px 20px 28px;
+      overflow-y: auto;
+      color: white;
+      background:
+        radial-gradient(circle at 50% 18%, rgba(255,255,255,0.09), transparent 34%),
+        rgba(5,5,5,0.96);
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
+      transition: opacity 0.32s ease, visibility 0.32s ease;
+    }
+
+    .calculatorOverlay.active {
+      opacity: 1;
+      pointer-events: auto;
+      visibility: visible;
+    }
+
+    .calculatorPanel {
+      width: min(860px, 100%);
+      margin: auto;
+    }
+
+    .calculatorHeader {
+      margin-bottom: 28px;
+      text-align: center;
+    }
+
+    .calculatorEyebrow,
+    .calculatorNotice,
+    .calculatorNote,
+    .fieldLabel,
+    .resultLabel {
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      line-height: 1.6;
+      text-transform: uppercase;
+    }
+
+    .calculatorEyebrow {
+      margin: 0 0 10px;
+      color: rgba(255,255,255,0.48);
+    }
+
+    .calculatorTitle {
+      margin: 0 0 14px;
+      font-size: clamp(24px, 5vw, 44px);
+      font-weight: 400;
+      letter-spacing: 3px;
+    }
+
+    .calculatorNotice {
+      margin: 0;
+      color: rgba(255,255,255,0.62);
+    }
+
+    .calculatorForm {
+      display: grid;
+      gap: 22px;
+    }
+
+    .dimensionFields {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .calculatorFieldset {
+      min-width: 0;
+      margin: 0;
+      padding: 0;
+      border: 0;
+    }
+
+    .fieldLabel {
+      display: block;
+      margin: 0 0 9px;
+      color: rgba(255,255,255,0.62);
+    }
+
+    .dimensionInput {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 14px 15px;
+      color: white;
+      background: rgba(255,255,255,0.055);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 0;
+      outline: none;
+      font: inherit;
+      font-size: 15px;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .dimensionInput:focus {
+      border-color: rgba(255,255,255,0.82);
+      background: rgba(255,255,255,0.085);
+    }
+
+    .optionGrid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .optionGrid.threeOptions {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .calculatorOption {
+      position: relative;
+      min-width: 0;
+      cursor: pointer;
+    }
+
+    .calculatorOption input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .calculatorOption span {
+      min-height: 48px;
+      box-sizing: border-box;
+      display: grid;
+      place-items: center;
+      padding: 10px 8px;
+      color: rgba(255,255,255,0.68);
+      border: 1px solid rgba(255,255,255,0.22);
+      font-size: 10px;
+      letter-spacing: 1.2px;
+      line-height: 1.35;
+      text-align: center;
+      text-transform: uppercase;
+      transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .calculatorOption:hover span,
+    .calculatorOption input:focus-visible + span {
+      color: white;
+      border-color: rgba(255,255,255,0.62);
+    }
+
+    .calculatorOption input:checked + span {
+      color: #050505;
+      background: rgba(255,255,255,0.92);
+      border-color: rgba(255,255,255,0.92);
+    }
+
+    .calculatorResult {
+      padding: 22px 0 0;
+      border-top: 1px solid rgba(255,255,255,0.2);
+      text-align: center;
+    }
+
+    .resultLabel {
+      margin-bottom: 8px;
+      color: rgba(255,255,255,0.55);
+    }
+
+    .resultPrice {
+      min-height: 52px;
+      font-size: clamp(32px, 7vw, 56px);
+      font-weight: 400;
+      letter-spacing: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .resultPrice.waiting {
+      color: rgba(255,255,255,0.28);
+    }
+
+    .calculatorNote {
+      max-width: 650px;
+      margin: 12px auto 0;
+      color: rgba(255,255,255,0.48);
+      text-transform: none;
+    }
+
+    @media (max-width: 700px) {
+      .calculatorOverlay {
+        place-items: start center;
+        padding: 70px 15px 24px;
+      }
+
+      .calculatorHeader {
+        margin-bottom: 22px;
+      }
+
+      .calculatorForm {
+        gap: 18px;
+      }
+
+      .optionGrid,
+      .optionGrid.threeOptions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
     .galleryOverlay {
       position: fixed;
       inset: 0;
@@ -416,7 +621,8 @@
     }
 
     @media (max-width: 760px) {
-      .galleryOverlay {
+  
+    .galleryOverlay {
         padding: 72px 16px 24px;
       }
 
@@ -456,11 +662,72 @@
       <div class="intro-actions">
         <button onclick="enterArchive()">ENTER ARCHIVE</button>
         <button onclick="openGallery()">GALLERY</button>
+        <button onclick="openCalculator()">CALCULATOR</button>
       </div>
     
     </div>
   </div>
 
+
+
+  <section id="calculatorOverlay" class="calculatorOverlay" lang="en" aria-label="Tattoo price calculator" aria-hidden="true">
+    <button class="galleryClose" type="button" onclick="closeCalculator()" aria-label="Back"><span aria-hidden="true">‹</span></button>
+
+    <div class="calculatorPanel">
+      <header class="calculatorHeader">
+        <p class="calculatorEyebrow">Estimated tattoo price</p>
+        <h2 class="calculatorTitle">CALCULATOR</h2>
+        <p class="calculatorNotice">The calculation uses the current discounted rate.</p>
+      </header>
+
+      <form id="calculatorForm" class="calculatorForm">
+        <div class="dimensionFields">
+          <label>
+            <span class="fieldLabel">Height (cm)</span>
+            <input class="dimensionInput" id="tattooHeight" name="height" type="number" min="0.1" step="0.1" inputmode="decimal" placeholder="0" />
+          </label>
+          <label>
+            <span class="fieldLabel">Width (cm)</span>
+            <input class="dimensionInput" id="tattooWidth" name="width" type="number" min="0.1" step="0.1" inputmode="decimal" placeholder="0" />
+          </label>
+        </div>
+
+        <fieldset class="calculatorFieldset">
+          <legend class="fieldLabel">Style</legend>
+          <div class="optionGrid">
+            <label class="calculatorOption"><input type="radio" name="style" value="1" /><span>Single Color</span></label>
+            <label class="calculatorOption"><input type="radio" name="style" value="2" /><span>Realism</span></label>
+            <label class="calculatorOption"><input type="radio" name="style" value="0.7" /><span>Line Work</span></label>
+            <label class="calculatorOption"><input type="radio" name="style" value="2" /><span>Cover-Up</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="calculatorFieldset">
+          <legend class="fieldLabel">Color</legend>
+          <div class="optionGrid threeOptions">
+            <label class="calculatorOption"><input type="radio" name="color" value="1" /><span>Black</span></label>
+            <label class="calculatorOption"><input type="radio" name="color" value="1.4" /><span>Mostly Black</span></label>
+            <label class="calculatorOption"><input type="radio" name="color" value="2" /><span>Colored</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="calculatorFieldset">
+          <legend class="fieldLabel">Placement</legend>
+          <div class="optionGrid threeOptions">
+            <label class="calculatorOption"><input type="radio" name="placement" value="1" /><span>Arm, Leg, Back</span></label>
+            <label class="calculatorOption"><input type="radio" name="placement" value="1.6" /><span>Hand, Feet</span></label>
+            <label class="calculatorOption"><input type="radio" name="placement" value="1.4" /><span>Chest, Waist</span></label>
+          </div>
+        </fieldset>
+
+        <div class="calculatorResult" aria-live="polite">
+          <div class="resultLabel">Estimated Price</div>
+          <div id="calculatorPrice" class="resultPrice waiting">—</div>
+          <p class="calculatorNote">This is an estimated price intended to provide a general idea. The final price may change after the design and placement are reviewed.</p>
+        </div>
+      </form>
+    </div>
+  </section>
 
   <section id="galleryOverlay" class="galleryOverlay" aria-label="Flash design gallery" aria-hidden="true">
     <div id="galleryBackdrop" class="galleryBackdrop" aria-hidden="true"></div>
@@ -675,6 +942,50 @@
     viewer.addHandler("pan", handleMobileProximity);
 
     viewer.addHandler("canvas-exit", hideLabel);
+
+    const calculatorOverlay = document.getElementById("calculatorOverlay");
+    const calculatorForm = document.getElementById("calculatorForm");
+    const calculatorPrice = document.getElementById("calculatorPrice");
+    const priceFormatter = new Intl.NumberFormat("tr-TR", {
+      style: "currency",
+      currency: "TRY",
+      maximumFractionDigits: 0
+    });
+
+    function calculateTattooPrice() {
+      const height = Number(document.getElementById("tattooHeight").value);
+      const width = Number(document.getElementById("tattooWidth").value);
+      const style = calculatorForm.querySelector('input[name="style"]:checked');
+      const color = calculatorForm.querySelector('input[name="color"]:checked');
+      const placement = calculatorForm.querySelector('input[name="placement"]:checked');
+
+      if (height <= 0 || width <= 0 || !style || !color || !placement) {
+        calculatorPrice.textContent = "—";
+        calculatorPrice.classList.add("waiting");
+        return;
+      }
+
+      const sizePrice = Math.max((height * 9) * (width * 9), 1000);
+      const price = sizePrice * Number(style.value) * Number(color.value) * Number(placement.value);
+
+      calculatorPrice.textContent = priceFormatter.format(Math.round(price));
+      calculatorPrice.classList.remove("waiting");
+    }
+
+    function openCalculator() {
+      closeGallery();
+      calculatorOverlay.classList.add("active");
+      calculatorOverlay.setAttribute("aria-hidden", "false");
+      calculateTattooPrice();
+    }
+
+    function closeCalculator() {
+      calculatorOverlay.classList.remove("active");
+      calculatorOverlay.setAttribute("aria-hidden", "true");
+    }
+
+    calculatorForm.addEventListener("input", calculateTattooPrice);
+    calculatorForm.addEventListener("change", calculateTattooPrice);
     const gallerySlides = [
       { main: "gallery/dövme-1.png", mockup: "gallery/mockup-1.png", alt: "Flash design 1" },
       { main: "gallery/dövme-2.png", mockup: "gallery/mockup-2.png", alt: "Flash design 2" },
@@ -751,6 +1062,7 @@
     }
 
     function openGallery() {
+      closeCalculator();
       galleryPreviewOpen = false;
       galleryOverlay.classList.add("active");
       galleryOverlay.setAttribute("aria-hidden", "false");
@@ -795,7 +1107,11 @@
       if (event.key === "ArrowLeft") changeGallerySlide(-1);
       if (event.key === "Escape") closeGallery();
     });
-
+window.addEventListener("keydown", function(event) {
+      if (event.key === "Escape" && calculatorOverlay.classList.contains("active")) {
+        closeCalculator();
+      }
+    });
     renderGallery();
     function enterArchive() {
       document.getElementById("intro").classList.add("hidden");
@@ -812,6 +1128,7 @@
 
     function returnToMenu() {
       closeGallery();
+      closeCalculator();
       hideLabel();
       document.getElementById("intro").classList.remove("hidden");
       document.getElementById("viewer").classList.remove("visible");
